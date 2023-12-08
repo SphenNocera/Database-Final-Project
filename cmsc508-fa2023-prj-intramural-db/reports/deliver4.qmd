@@ -1,0 +1,286 @@
+---
+title: Deliverable 4
+author: Stephen Nocera, Tyrese Whitehead
+date: last-modified
+format:
+    html:
+        toc: true
+        embed-resources: true
+---
+
+---
+
+# Section 1: Overview
+
+* [Project Deliverable 3](https://vcu.mediaspace.kaltura.com/media/Project%203%20Deliverable/1_2h66sil6)
+* [Peoject Deliverable 4](https://vcu.mediaspace.kaltura.com/media/Project%20Deliverable%204/1_d9wu9359)
+* [Project GitHub](https://github.com/cmsc-vcu/cmsc508-fa2023-prj-intramural-db)
+
+Deliverable 4: Entity relationship diagrams
+
+This document contains diagrams for deliverable 4. ERDs are used to model the relationships between different entities in a database.
+
+The diagrams are organized by topic, with each diagram representing a different aspect of the data model. For example, there are diagrams for the following topics:
+
+* Player
+* Team
+* Sport
+* Match
+
+Each diagram is accompanied by a brief explanation of the different entities and relationships that are depicted.
+
+Relational schemas are used to define the structure of a database. They specify the different entities in the database, the attributes of each entity, and the relationships between the entities.
+
+Functional dependencies are used to describe the relationships between the attributes of an entity. They can be used to identify the primary and foreign keys in a database.
+
+Queries are used to retrieve data from a database. They can be used to answer a wide variety of questions about the data, such as "What teams are playing each other?" or "Who is on each team?"
+
+This document is intended to provide a comprehensive overview of the data model for deliverable 4. ER diagrams can be used to visualize the relationships between the different entities in the database. The relational schemas can be used to understand the structure of the database. The functional dependencies can be used to identify the primary and foreign keys in the database. And the queries can be used to retrieve data from the database and answer a wide variety of questions.
+
+# Section 2: Problem Description
+Every semester, VCU provides intramural sports for their students through the RecWell department. So students are allowed to create teams and participate in various sports including basketball, flag football, soccer and more. But, I’ve found that accessing student information is difficult and finding information from previous semesters is impossible because it’s not stored online once the season is over. 
+
+A database is needed in this case so that this information can be stored and is able to be viewed by interested students. A database would make viewing this information a lot easier. Also, it could serve as a way of remembering history. Since data isn’t kept from previous semesters, there is no form of continued recognition for those who won championships in their sport. This data would allow students/teams to not only see how they compare to current teams, but also how they compare to previous years of teams, etc.
+
+Our idea was for the 4 entities to be players, teams, sports, and matches. Then attributes would include things like name, V number, date, location, etc. This would allow us to group each member of the teams by all sorts of different attributes like grade level, age, and experience. The teams would be able to display stats, and ranked based on those.
+
+This database would be for VCU students. So, not exclusively VCU students that play intramural sports, but all VCU students could reasonably use this database. This information would help give students more information about each intramural sport and might entice them to get involved.
+
+I selected this problem domain because it relates to something that I do in my free time. I’ve been playing intramural sports since my freshman year and sometimes I have trouble finding information on opposing teams if I try to look for it before games. So I thought that creating this database would be a good way to solve that problem. 
+
+
+# Section 3: ER Diagrams
+```{mermaid}
+erDiagram
+    PLAYER }| -- |{ TEAM : plays_on
+    TEAM || -- |{ MATCH : plays_in
+    SPORT || -- |{ TEAM : associated_with
+
+    PLAYER{
+        string player_id PK
+        string playerName
+        string email
+        string schoolYear
+    }
+
+    TEAM{
+        string team_id PK
+        string teamName
+        string averagePointsScored
+        string totalWins
+    }
+
+    SPORT{
+        string sport_id PK
+        string sportType
+    }
+
+    MATCH{
+        string match_id PK
+        string team1
+        string team2
+        string score1
+        string score2
+        string winner FK
+        string date
+        string location
+    }
+
+```
+
+### Chen Diagram
+```{dot}
+graph ER {
+    layout=neato;
+  scale=1.5;
+    node [shape=box]; player; team; sport; match;
+    node [shape=ellipse]; player_id, playerName, email, schoolYear, team_id, teamName, averagePointsScored, totalWins, sport_id, sportType, match_id, team1, team2, score1, score2, date, location
+    node [shape=diamond,style=filled,color=lightgrey]; plays_on, plays_in, associated_with
+    
+    player -- plays_on [label="n",len=1.00]
+    plays_on -- team [label="n",len=1.00]
+    
+    team -- plays_in [label="1",len=1.00]
+    plays_in -- match [label="n",len=1.00]
+
+    sport -- associated_with [label="1",len=1.00]
+    associated_with -- team [label="n",len=1.00]
+    
+    player -- player_id
+    player -- playerName
+    player -- email
+    player -- schoolYear
+    
+    team -- team_id
+    team -- teamName
+    team -- averagePointsScored
+    team -- totalWins
+
+    sport -- sport_id
+    sport -- sportType
+    
+    match -- match_id
+    match -- team1
+    match -- team2
+    match -- score1
+    match -- score2
+    match -- date
+    match -- location
+  
+}
+```
+
+### Relational Schemas
+
+Players table
+
+* player_id : int $\rightarrow$  length 5
+* player_first_name : string $\rightarrow$  length 20
+* player_last_name : string $\rightarrow$  length 20
+* email : string $\rightarrow$  length 40
+* school_year : string $\rightarrow$  length 10
+
+| player_id (PK) | player_first_name | player_last_name | email | school_year |
+|-----------|-------------|-------|-------------|----------|
+|     1      |    Olivia | Parker   |  iliveforparks@hotmail.com     |    Freshman         |
+|     2      |       Cameron | Stiles      |  canstyles0@gmail.com     |    Sophomore         |
+|     3     |   James | Riveraz          |  jjr1996@gmail.com     |    Junior         |
+|     4      |    Abigail | Nguyen         |  abbytabby@outlook.com      |     Senior        |             
+|     5      |   Jaquan | Burton          | jaybird33@aol.com       |    Sophomore         |             
+
+
+Teams table
+
+* team_id : int $\rightarrow$  length 5
+* team_name : string $\rightarrow$  length 20
+* avgPointsScored : int $\rightarrow$  length 3
+* total_wins : int $\rightarrow$  length 2
+
+| team_id (PK) | team_name | avgPointsScored | total_wins |
+|---------|-----------|-----------------|------------|
+|   1      |     Cougars       |      22           |     5       |
+|    2     |     Eagles       |        15         |      2      |
+|     3    |    Wolves        |        2         |       0     |
+|     4   |   Bears        |         57        |      9      |
+|     5    |    Cheetahs       |       88          |     16       |
+
+Sports table
+
+* sport_id : int $\rightarrow$  length 3
+* sport_type : string $\rightarrow$  length 20
+
+| sport_id (PK) | sport_type |
+|----------|------------|
+|     1     |    Soccer        |
+|      2    |     Volleyball       |
+|       3   |     Basketball       |
+|      4    |    Cross Country        |
+|       5   |    Swimming        |
+Matchs table
+
+* match_id : int $\rightarrow$  length 5
+* team1 : string $\rightarrow$  length 20
+* team2 : string $\rightarrow$  length 20
+* score1 : int $\rightarrow$  length 3
+* score2 : int $\rightarrow$  length 3
+* winner : int (team_id) $\rightarrow$  length 5
+* date : string $\rightarrow$  length 10
+* location : string $\rightarrow$  length 25
+
+| match_id (PK) | team1 | team2 | score1 | score2 | winner (team_id FK) | date | location |
+|----------|-------|-------|--------|--------|--------|------|----------|
+|    1      |   Cougars    |   Eagles    |    20    |    12    |   Cougars     |  01/01/2021    |   VCU       |
+|     2     |   Cougars    |  Wolves     |  30      |    5    |   Cougars     | 02/02/2021     |    VCU      |
+|      3    |   Cheetahs   |  Bears     |   66     |   40     |  Cheetahs      | 03/03/2021     |    VCU      |
+|       4   |  Cheetahs     |  Wolves     |  100      |   22     |   Cheetahs     |  04/04/2021    |    VCU      |
+|        5  |   Bears    |  Eagles     |   64     |   24     |  Bears      |  05/05/2023    |   VCU       |
+
+The primary keys of the relations are listed as PK, and the foreign keys are listed as FK.
+
+### Functional Dependencies
+<u><strong>Player table</strong></u>
+
+* player_id $\rightarrow$ player_first_name, player_last_name, email, school_year
+
+<u><strong>Team table</strong></u>
+
+* team_id $\rightarrow$ team_name, avgPointsScored, total_wins
+
+<u><strong>Sport table</strong></u>
+
+* sport_id $\rightarrow$ sport_type
+
+<u><strong>Match table</strong></u>
+
+* match_id $\rightarrow$ team1, team2, score1, score2, winner, date, location
+* team1 $\rightarrow$ score1
+* team2 $\rightarrow$ score2
+
+### Specific Queries
+
+1. Which team has the most wins?
+
+2. Are there any teams with the same name?
+
+3. What is the most points averaged by a team?
+
+4. What is the most points scored in one game?
+
+5. How many people play basketball?
+
+6. How many teams play football?
+
+7. How many sports are there?
+
+8. Are there any teams with 0 wins?
+
+9. Have there been any games ending in a tie?
+
+10. How many games are played in Cary St. Gym?
+
+11. Which date has the most games played?
+
+12. How many juniors play intramural sports?
+
+13. Display a list of all names and email addresses.
+
+14. Display a list of all team names and their sport.
+
+15. Which location has the most games played?
+
+16. Which school year has the most participants?
+
+17. What is the most amount of players on one team?
+
+18. How many people are named John Doe?
+
+19. Are there any people that play on more than 1 team?
+
+20. Is the team that averages the most points also the team with the most wins?
+
+# Section 4: Project Management
+
+```{mermaid}
+gantt
+    dateFormat  YYYY-MM-DD
+    title       GANTT Diagram for Project Deliverables and Tasks
+    excludes    weekends
+    %% (`excludes` accepts specific dates in YYYY-MM-DD format, days of the week ("sunday") or "weekends", but not the word "weekdays".)
+
+    section Deliverables
+    Team formation            :done,    des1, 2023-08-22,2023-08-27
+    Topic Proposal Video      :done,    des2, 2023-08-28,2023-09-15
+    Phase 1 Submission        :active,  des3, 2023-09-16, 2023-10-15
+    Status Report 1           :         des4, 2023-10-16, 2023-11-03
+    Status Report 2           :         des5, 2023-11-04, 2023-11-17
+    Phase 2 Submission        :         des6, 2023-11-18, 2023-12-11
+
+    section Tasks
+    Create database idea                :crit, done, 2023-08-22,2023-09-15
+    Database design                     :crit, active, 2023-09-15,2023-10-15
+    Convert design to SQL               :crit, 2023-10-16,2023-11-12
+    Make sure database is in BCNF       :crit, 2023-11-13,2023-11-30
+    Test example queries                :crit, 2023-12-01, 2023-12-11
+```
+
+
